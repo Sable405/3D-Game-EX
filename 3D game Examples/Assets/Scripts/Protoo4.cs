@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 //using System.Numerics;
+
+//using System.Numerics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 public class Protoo4 : MonoBehaviour
@@ -23,8 +25,23 @@ public class Protoo4 : MonoBehaviour
 
     private Vector3 _defaultGravity = new Vector3(0f, -9.81f, 0);
 
+
+
+    public GameObject checkpointAreaObject;
+
+    public bool isAtCheckpoint = false;
+
+    public Vector3 _startingPosition;
+
+    private Vector3 _Spawn; 
+
+  
+public float Out =10;
     void Start ()
     {
+
+      
+     
         Physics.gravity = _defaultGravity;
 
         _rigidbody = GetComponent<Rigidbody> ();
@@ -42,6 +59,19 @@ void Update()
             playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isOnGround = false;
         }
+
+        if(transform.position.y < Out)
+        {
+            if(isAtCheckpoint)
+            {
+                transform.position = _startingPosition; 
+            }
+            else
+            {
+                transform.position = _startingPosition;
+            }
+        }
+
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -51,10 +81,10 @@ void Update()
             isOnGround = true;
           
         }
-       if (collision.gameObject.CompareTag("Outta"))
-       {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-       }
+     //  if (collision.gameObject.CompareTag("Outta"))
+      // {
+      //  SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+      // }
     }
 
 
@@ -79,5 +109,14 @@ void Update()
         Vector3 desiredForward = Vector3.RotateTowards (transform.forward, _movement, turnSpeed * Time.deltaTime, 0f);
         m_Rotation = Quaternion.LookRotation (desiredForward);
     }
+    void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject == checkpointAreaObject)
+        {
+            isAtCheckpoint = true;
+            _startingPosition = checkpointAreaObject.transform.position;
+        }
+    }
+
 
 }
